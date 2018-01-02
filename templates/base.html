@@ -1,3 +1,6 @@
+{% load static %}
+{% load i18n %}
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -10,6 +13,8 @@
     <meta name="author" content="">
     <link rel="icon" href="../../favicon.ico">
 
+    <title>{% block head_title %}{% trans "Student Registration" %}{% endblock %}</title>
+
     <title>Sticky Footer Navbar Template for Bootstrap</title>
 
     <!-- Bootstrap core CSS -->
@@ -20,6 +25,10 @@
 
     <!-- Custom styles for this template -->
     <link href="http://getbootstrap.com/docs/3.3/examples/sticky-footer-navbar/sticky-footer-navbar.css" rel="stylesheet">
+
+    {% block head_datatables_css %}{% endblock %}
+
+     <link rel="stylesheet" href="{% static 'css/sticky-footer-navbar.css' %}">
 
     <!-- Just for debugging purposes. Don't actually copy these 2 lines! -->
     <!--[if lt IE 9]><script src="../../assets/js/ie8-responsive-file-warning.js"></script><![endif]-->
@@ -33,6 +42,8 @@
   </head>
 
   <body>
+
+     {% block navbar %}
 
     <!-- Fixed navbar -->
     <nav class="navbar navbar-default navbar-fixed-top">
@@ -68,8 +79,42 @@
       </div>
     </nav>
 
+ {% endblock %}
+
     <!-- Begin page content -->
     <div class="container">
+
+    {% block messages %}
+          
+          {% if messages %}
+            {% regroup messages|dictsort:"tags" by tags as message_list  %}
+            {% for tags in message_list %}
+              {% for message in tags.list %}
+                {% if forloop.first %}
+                  {% if 'error' in message.tags %}
+                    <div class="alert alert-danger" role="alert">
+                  {% else %}
+                    <div class="alert alert-{{ message.level_tag }}" role="alert">
+                  {% endif %}
+                      <ul class="messages">
+                {% endif %}
+                      <li>
+                        {{ message }}
+                      </li>
+              {% endfor %}
+                    </ul>
+                    <!-- <button type="button" class="close btn pull-right"" data-dismiss="alert" aria-hidden="true">&times;</button> -->
+                  </div>
+            {% endfor %}
+          {% endif %}
+
+    {% endblock %}
+
+
+
+
+    {% block content %}
+
       <div class="page-header">
         <h1>Sticky footer with fixed navbar</h1>
       </div>
@@ -77,11 +122,19 @@
       <p>Back to <a href="../sticky-footer">the default sticky footer</a> minus the navbar.</p>
     </div>
 
+    {% endblock %}
+
+    {% block footer %}
+
     <footer class="footer">
       <div class="container">
         <p class="text-muted">Place sticky footer content here.</p>
       </div>
     </footer>
+
+    {% endblock %}
+
+
 
 
     <!-- Bootstrap core JavaScript
@@ -90,7 +143,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
     <script>window.jQuery || document.write('<script src="../../assets/js/vendor/jquery.min.js"><\/script>')</script>
     <script src="http://getbootstrap.com/docs/3.3/dist/js/bootstrap.min.js"></script>
+     {% block head_datatables_js %}{% endblock %}
     <!-- IE10 viewport hack for Surface/desktop Windows 8 bug -->
     <script src="http://getbootstrap.com/docs/3.3/assets/js/ie10-viewport-bug-workaround.js"></script>
+    {% block head_datatables_script %}{% endblock %}
+
   </body>
 </html>
